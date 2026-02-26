@@ -58,11 +58,18 @@ def extract_keywords(text, top_n=10):
     return [w for w, _ in sorted_words[:top_n]]
 
 def find_matching_keywords(resume_text, jd_text):
-    resume_words = set(extract_keywords(resume_text, 30))
-    jd_words = set(extract_keywords(jd_text, 30))
-    matched = resume_words & jd_words
-    missing = jd_words - resume_words
-    return list(matched), list(missing)
+    import re 
+    resume_text=resume_text.lower().strip()
+    jd_text=jd_text.lower().strip()
+    jd_words=set(re.findall(r'\b[a-zA-Z0-9+#.]+\b',jd_text))
+    matched=[]
+    missing=[]
+    for word in jd_words:
+        if word in resume_text:
+            matched.append(word)
+        else:
+            missing.append(word)
+    return matched, missing
 
 @app.route("/")
 def index():
